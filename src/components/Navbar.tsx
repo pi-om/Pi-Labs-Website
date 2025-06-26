@@ -74,11 +74,10 @@ const Navbar = () => {
           {/* Logo in center - properly centered */}
           {headerLogoOpacity > 0 && (
             <div 
-              className="transition-all duration-500 ease-out absolute"
+              className="transition-all duration-500 ease-out absolute left-1/2"
               style={{ 
-                left: 'calc(50% - 10px)', // Shifted 10px left from center
-                opacity: headerLogoOpacity,
-                transform: `translateX(-50%) scale(${0.8 + (headerLogoOpacity * 0.2)})` // Center and scale
+                transform: `translateX(calc(-50% - 10px)) scale(${0.8 + (headerLogoOpacity * 0.2)})`, // Combined transform
+                opacity: headerLogoOpacity
               }}
             >
               <img 

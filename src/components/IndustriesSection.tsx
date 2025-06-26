@@ -1,8 +1,35 @@
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Shield, Building, AlertTriangle, Lock, Monitor, Zap } from "lucide-react";
 
 const IndustriesSection = () => {
+  const vantaRef = useRef(null);
+  const vantaEffect = useRef(null);
+
+  useEffect(() => {
+    if (!vantaEffect.current && vantaRef.current) {
+      vantaEffect.current = (window as any).VANTA.NET({
+        el: vantaRef.current,
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color: 0x3355ff,
+        backgroundColor: 0xf8fafc,
+        points: 20.00,
+        maxDistance: 19.00,
+        spacing: 15.00
+      });
+    }
+    return () => {
+      if (vantaEffect.current) {
+        vantaEffect.current.destroy();
+      }
+    };
+  }, []);
   const industries = [
     {
       title: "Law Enforcement Agencies",
@@ -37,12 +64,16 @@ const IndustriesSection = () => {
   ];
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 bg-gray-50" id="industries">
-      <div className="section-container opacity-0 animate-on-scroll">
+    <section 
+      ref={vantaRef}
+      className="py-12 sm:py-16 md:py-20 relative" 
+      id="industries"
+    >
+      <div className="section-container opacity-0 animate-on-scroll relative z-10">
         <div className="text-center mb-12">
           <h2 className="section-title mb-6">Industries we serve</h2>
           <p className="section-subtitle mx-auto">
-            pi-labs products today are trusted by governments, financial institutions, law enforcement agencies, and enterprises worldwide. pi-labs is at the forefront of preventing sophisticated fraud, securing critical evidence, and enhancing intelligence operations.
+            Pi-Labs products today are trusted by governments, financial institutions, law enforcement agencies, and enterprises worldwide. Pi-Labs is at the forefront of preventing sophisticated fraud, securing critical evidence, and enhancing intelligence operations.
           </p>
         </div>
         
@@ -50,7 +81,7 @@ const IndustriesSection = () => {
           {industries.map((industry, index) => (
             <div 
               key={index} 
-              className="bg-white rounded-2xl p-6 shadow-elegant hover:shadow-elegant-hover transition-all duration-300 hover:translate-y-[-5px] group text-center"
+              className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-elegant hover:shadow-elegant-hover transition-all duration-300 hover:translate-y-[-5px] group text-center border border-white/20"
             >
               <div className="w-16 h-16 bg-pulse-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-pulse-200 transition-colors">
                 <industry.icon className="w-8 h-8 text-pulse-600" />

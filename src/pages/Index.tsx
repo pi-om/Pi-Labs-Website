@@ -6,9 +6,7 @@ import PiLabsImpact from "@/components/PiLabsImpact";
 import ProductsSection from "@/components/ProductsSection";
 import IndustriesSection from "@/components/IndustriesSection";
 import Features from "@/components/Features";
-import ClientsCarousel from "@/components/ClientsCarousel";
 import Testimonials from "@/components/Testimonials";
-import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -60,15 +58,13 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <main className="space-y-4 sm:space-y-8">
+      <main>
         <Hero />
         <PiLabsImpact />
         <ProductsSection />
         <IndustriesSection />
         <Features />
-        <ClientsCarousel />
         <Testimonials />
-        <Newsletter />
       </main>
       <Footer />
     </div>

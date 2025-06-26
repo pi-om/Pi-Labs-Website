@@ -5,7 +5,11 @@ import { ArrowRight } from "lucide-react";
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const vantaRef = useRef(null);
+  const vantaEffect = useRef(null);
+  const logoRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     // Check if mobile on mount and when window resizes
@@ -18,117 +22,142 @@ const Hero = () => {
     
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-  
+
   useEffect(() => {
-    // Skip parallax on mobile
-    if (isMobile) return;
-    
+    // Handle scroll for logo animation
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const elements = document.querySelectorAll('.parallax');
-      elements.forEach(el => {
-        const element = el as HTMLElement;
-        const speed = parseFloat(element.dataset.speed || '0.1');
-        const yPos = -scrollY * speed;
-        element.style.setProperty('--parallax-y', `${yPos}px`);
-      });
+      setScrollY(window.scrollY);
     };
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isMobile]);
+  }, []);
+
+  useEffect(() => {
+    // Initialize Vanta.js background
+    if (!vantaEffect.current && vantaRef.current) {
+      vantaEffect.current = (window as any).VANTA.NET({
+        el: vantaRef.current,
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color: 0x3355ff,
+        backgroundColor: 0xffffff,
+        points: 15.00,
+        maxDistance: 20.00,
+        spacing: 18.00
+      });
+    }
+    return () => {
+      if (vantaEffect.current) {
+        vantaEffect.current.destroy();
+      }
+    };
+  }, []);
+
+  // Calculate logo transform based on scroll
+  const getLogoTransform = () => {
+    const maxScroll = 300; // Distance to complete the animation
+    const progress = Math.min(scrollY / maxScroll, 1);
+    
+    // Logo shrinks from h-40 (160px) to h-8 (32px)
+    const initialSize = 160;
+    const finalSize = 32;
+    const currentSize = initialSize - (initialSize - finalSize) * progress;
+    
+    // Calculate exact position to land in header
+    // Header height is approximately 64px (py-4), logo should be centered in header
+    const headerHeight = 64;
+    const logoFinalY = headerHeight / 2; // Center of header from top
+    
+    // Move logo from center to exact header position
+    const viewportHeight = window.innerHeight;
+    const startY = (viewportHeight / 2) - 150; // Starting position (moved higher up from -60 to -120)
+    const endY = logoFinalY; // Final position in header
+    const currentY = startY - (startY - endY) * progress;
+    
+    // Opacity for other content
+    const contentOpacity = Math.max(0, 1 - progress * 2);
+    
+    return {
+      size: currentSize,
+      currentY,
+      contentOpacity,
+      logoOpacity: scrollY < maxScroll ? 1 : 0, // Hide when fully scrolled
+      showInHeader: scrollY >= maxScroll // Show in header when animation complete
+    };
+  };
+
+  const { size, currentY, contentOpacity, logoOpacity, showInHeader } = getLogoTransform();
   
   return (
     <section 
-      className="overflow-hidden relative bg-cover" 
+      ref={vantaRef}
+      className="overflow-hidden relative flex items-center justify-center" 
       id="hero" 
       style={{
-        backgroundImage: 'url("/Header-background.webp")',
-        backgroundPosition: 'center 30%', 
-        padding: isMobile ? '100px 12px 40px' : '120px 20px 60px'
+        minHeight: '100vh'
       }}
     >
-      <div className="absolute -top-[10%] -right-[5%] w-1/2 h-[70%] bg-pulse-gradient opacity-20 blur-3xl rounded-full"></div>
-      
-      <div className="container px-4 sm:px-6 lg:px-8" ref={containerRef}>
+      <div className="container px-4 sm:px-6 lg:px-8 relative z-10 py-8" ref={containerRef}>
         <div className="max-w-4xl mx-auto text-center">
+          {/* Animated Logo */}
           <div 
-            className="pulse-chip mb-3 sm:mb-6 opacity-0 animate-fade-in mx-auto" 
-            style={{ animationDelay: "0.1s" }}
+            ref={logoRef}
+            className="fixed left-1/2 z-50 transition-all duration-300 ease-out"
+            style={{
+              top: `${currentY}px`, // Exact position from top of viewport
+              transform: `translateX(-50%)`, // Only center horizontally
+              opacity: logoOpacity,
+              pointerEvents: scrollY > 200 ? 'none' : 'auto'
+            }}
           >
-            <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-pulse-500 text-white mr-2">01</span>
-            <span>Innovations for a safer tomorrow</span>
-          </div>
-          
-          <h1 
-            className="section-title text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-tight opacity-0 animate-fade-in mb-6" 
-            style={{ animationDelay: "0.3s" }}
-          >
-            Trust, Intelligence<br className="hidden sm:inline" />and Innovation
-          </h1>
-          
-          <p 
-            style={{ animationDelay: "0.5s" }} 
-            className="section-subtitle mt-3 sm:mt-6 mb-4 sm:mb-8 leading-relaxed opacity-0 animate-fade-in text-gray-950 font-normal text-base sm:text-lg"
-          >
-            Accelerating investigations and intelligence using AI. Redefining trust in an AI-first world.
-          </p>
-          
-          <div 
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 opacity-0 animate-fade-in" 
-            style={{ animationDelay: "0.7s" }}
-          >
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Accelerating investigations</h3>
-              <p className="text-sm text-gray-700">Using AI</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Intelligence</h3>
-              <p className="text-sm text-gray-700">Redefining trust</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">AI-first world</h3>
-              <p className="text-sm text-gray-700">Innovation</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Trust</h3>
-              <p className="text-sm text-gray-700">Safer tomorrow</p>
-            </div>
-          </div>
-          
-          <div 
-            className="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-fade-in" 
-            style={{ animationDelay: "0.9s" }}
-          >
-            <a 
-              href="#products" 
-              className="flex items-center justify-center group w-full sm:w-auto text-center" 
-              style={{
-                backgroundColor: '#FE5C02',
-                borderRadius: '1440px',
-                boxSizing: 'border-box',
-                color: '#FFFFFF',
-                cursor: 'pointer',
-                fontSize: '14px',
-                lineHeight: '20px',
-                padding: '16px 24px',
-                border: '1px solid white',
+            <img 
+              src="/pilabs-dark copy.svg" 
+              alt="Pi-Labs" 
+              style={{ 
+                height: `${size}px`,
+                width: 'auto',
+                transition: 'all 0.3s ease-out'
               }}
-            >
-              Explore Products
-              <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </a>
-            <a 
-              href="#contact" 
-              className="flex items-center justify-center w-full sm:w-auto text-center bg-white/20 backdrop-blur-sm border border-white/30 text-gray-900 font-medium py-4 px-6 rounded-full transition-all duration-300 hover:bg-white/30"
-            >
-              Contact Us
-            </a>
+            />
+          </div>
+
+          {/* Action buttons with fade animation */}
+          <div style={{ opacity: contentOpacity, transition: 'opacity 0.3s ease-out' }}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-60">
+              <a 
+                href="#products" 
+                className="flex items-center justify-center group w-full sm:w-auto text-center" 
+                style={{
+                  backgroundColor: '#3355FF',
+                  borderRadius: '1440px',
+                  boxSizing: 'border-box',
+                  color: '#FFFFFF',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  padding: '16px 24px',
+                  border: '1px solid white',
+                }}
+              >
+                Explore Products
+                <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </a>
+              <a 
+                href="#contact" 
+                className="flex items-center justify-center w-full sm:w-auto text-center bg-white/20 backdrop-blur-sm border border-white/30 text-gray-900 font-medium py-4 px-6 rounded-full transition-all duration-300 hover:bg-white/30"
+              >
+                Contact Us
+              </a>
+            </div>
           </div>
         </div>
       </div>
-      
-      <div className="hidden lg:block absolute bottom-0 left-1/4 w-64 h-64 bg-pulse-100/30 rounded-full blur-3xl -z-10 parallax" data-speed="0.05"></div>
     </section>
   );
 };

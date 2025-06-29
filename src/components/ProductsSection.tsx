@@ -5,7 +5,7 @@ import { ArrowRight, Shield, Video, Database, Lock, Mic } from "lucide-react";
 const ProductsSection = () => {
   const products = [
     {
-      name: "Authentify",
+      name: "pi-authentify",
       title: "Deepfake Detection Solution",
       description: "Advanced AI-powered deepfake detection for video, audio, and images",
       icon: Shield,
@@ -14,7 +14,7 @@ const ProductsSection = () => {
       image: "/lovable-uploads/22d31f51-c174-40a7-bd95-00e4ad00eaf3.png"
     },
     {
-      name: "Sense",
+      name: "pi-sense",
       title: "AI-Driven Video Forensics",
       description: "Transform video evidence into actionable intelligence",
       icon: Video,
@@ -23,7 +23,7 @@ const ProductsSection = () => {
       image: "/lovable-uploads/ddcc5ea3-82f4-43a4-81fc-349521291ed2.png"
     },
     {
-      name: "Scout",
+      name: "pi-scout",
       title: "AI-Powered Data Fusion and Analytics Platform",
       description: "Unify disparate data sources into actionable intelligence",
       icon: Database,
@@ -32,7 +32,7 @@ const ProductsSection = () => {
       image: "/lovable-uploads/dc13e94f-beeb-4671-8a22-0968498cdb4c.png"
     },
     {
-      name: "SecureChain",
+      name: "pi-securechain",
       title: "Blockchain-Based Digital Case and Evidence Management",
       description: "Secure, tamper-proof evidence management with blockchain technology",
       icon: Lock,
@@ -40,7 +40,7 @@ const ProductsSection = () => {
       bgColor: "bg-gray-50"
     },
     {
-      name: "Vox",
+      name: "pi-vox",
       title: "AI-powered Audio Intelligence",
       description: "Convert voice to verifiable intelligence with multilingual support",
       icon: Mic,
@@ -69,7 +69,10 @@ const ProductsSection = () => {
                   <div className="flex items-center mb-4">
                     <div className="flex items-center">
                       {React.createElement(product.icon, { className: "w-6 h-6 text-[#3355FF] mr-3" })}
-                      <span className="text-xl font-bold text-[#3355FF]">{product.name}</span>
+                      <div className="flex items-center">
+                        <img src="/Layer 2.png" alt="pi" className="w-6 h-6 mr-1" />
+                        <span className="text-xl font-bold text-[#3355FF]">-{product.name.replace('pi-', '')}</span>
+                      </div>
                     </div>
                   </div>
                   <h3 className="text-base font-medium text-gray-700 mb-3">
@@ -99,7 +102,10 @@ const ProductsSection = () => {
                   <div className="flex items-center mb-4">
                     <div className="flex items-center">
                       {React.createElement(product.icon, { className: "w-6 h-6 text-[#3355FF] mr-3" })}
-                      <span className="text-xl font-bold text-[#3355FF]">{product.name}</span>
+                      <div className="flex items-center">
+                        <img src="/Layer 2.png" alt="pi" className="w-6 h-6 mr-1" />
+                        <span className="text-xl font-bold text-[#3355FF]">-{product.name.replace('pi-', '')}</span>
+                      </div>
                     </div>
                   </div>
                   <h3 className="text-base font-medium text-gray-700 mb-3">

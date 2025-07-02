@@ -1,15 +1,17 @@
-
 import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import PiLabsImpact from "@/components/PiLabsImpact";
 import ProductsSection from "@/components/ProductsSection";
 import IndustriesSection from "@/components/IndustriesSection";
-import Features from "@/components/Features";
-import Testimonials from "@/components/Testimonials";
+import FAQ from "@/components/FAQ";
+import BlogsShowcaseSection from "@/components/BlogsShowcaseSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
+  const location = useLocation();
+
   // Initialize intersection observer to detect when elements enter viewport
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -23,10 +25,10 @@ const Index = () => {
       },
       { threshold: 0.1 }
     );
-    
+
     const elements = document.querySelectorAll(".animate-on-scroll");
     elements.forEach((el) => observer.observe(el));
-    
+
     return () => {
       elements.forEach((el) => observer.unobserve(el));
     };
@@ -34,26 +36,33 @@ const Index = () => {
 
   useEffect(() => {
     // This helps ensure smooth scrolling for the anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener("click", function (e) {
         e.preventDefault();
-        
-        const targetId = this.getAttribute('href')?.substring(1);
+
+        const targetId = this.getAttribute("href")?.substring(1);
         if (!targetId) return;
-        
+
         const targetElement = document.getElementById(targetId);
         if (!targetElement) return;
-        
-        // Increased offset to account for mobile nav
-        const offset = window.innerWidth < 768 ? 100 : 80;
-        
+
+        // Reduced offset to account for shorter header
+        const offset = window.innerWidth < 768 ? 80 : 60;
+
         window.scrollTo({
           top: targetElement.offsetTop - offset,
-          behavior: 'smooth'
+          behavior: "smooth",
         });
       });
     });
   }, []);
+
+  useEffect(() => {
+    // Scroll to top when landing on homepage
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen">
@@ -61,10 +70,16 @@ const Index = () => {
       <main>
         <Hero />
         <PiLabsImpact />
-        <ProductsSection />
+        <div className="bg-white">
+          <ProductsSection />
+        </div>
         <IndustriesSection />
-        <Features />
-        <Testimonials />
+        <div className="bg-gray-50">
+          <BlogsShowcaseSection />
+        </div>
+        <div className="bg-white">
+          <FAQ />
+        </div>
       </main>
       <Footer />
     </div>

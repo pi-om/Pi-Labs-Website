@@ -70,8 +70,8 @@ const Hero = () => {
     const currentSize = initialSize - (initialSize - finalSize) * progress;
     
     // Calculate exact position to land in header
-    // Header height is approximately 64px (py-4), logo should be centered in header
-    const headerHeight = 64;
+    // Header height is approximately 48px (py-2 to py-3), logo should be centered in header
+    const headerHeight = 48;
     const logoFinalY = headerHeight / 2; // Center of header from top
     
     // Move logo from center to exact header position
